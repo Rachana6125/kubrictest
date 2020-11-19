@@ -5,6 +5,7 @@ import numpy
 import sys
 from scipy import stats
 import pandas as pd
+import csv
 
 
 TRAIN_DATA_URL = "https://storage.googleapis.com/kubric-hiring/linreg_train.csv"
@@ -17,13 +18,28 @@ def predict_price(area) -> float:
 
     You can run this program from the command line using `python3 regression.py`.
     """
-    # response = requests.get('TRAIN_DATA_URL')
+    response = requests.get(TRAIN_DATA_URL)
     # YOUR IMPLEMENTATION HERE
     ...
+
+    with open('data/linreg_train.csv', 'w') as f:
+        writer = csv.writer(f)
+        for line in response.iter_lines():
+            writer.writerow(line.decode('utf-8').split(','))
+
+    response = requests.get(TEST_DATA_URL)
+    # YOUR IMPLEMENTATION HERE
+    ...
+
+    with open('data/linreg_test.csv', 'w') as f:
+        writer = csv.writer(f)
+        for line in response.iter_lines():
+            writer.writerow(line.decode('utf-8').split(','))
+
     data = pd.read_csv('data/linreg_train.csv', header=None);
     x = data.values[0,1:].astype(float)
     y = data.values[1,1:].astype(float)
-    
+
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y);
     print('r_value = ', r_value);
     print('slope = ', slope);
